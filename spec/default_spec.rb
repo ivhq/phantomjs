@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 describe 'phantomjs::default' do
-  let(:version)  { '1.0.0' }
+  let(:version)  { '1.9.7' }
   let(:base_url) { 'http://example.com/' }
   let(:src_dir)  { '/src' }
-  let(:basename) { 'phantomjs-1.0.0-linux-x86' }
+  let(:prefix)   { '/usr' }
+  let(:basename) { "phantomjs-1.9.7" }
 
   let(:runner) {
     runner = ChefSpec::ChefRunner.new(platform: 'ubuntu', version: '12.04')
@@ -12,7 +13,7 @@ describe 'phantomjs::default' do
     runner.node.set['phantomjs']['version']  = version
     runner.node.set['phantomjs']['base_url'] = base_url
     runner.node.set['phantomjs']['src_dir']  = src_dir
-    runner.node.set['phantomjs']['basename'] = basename
+    runner.node.set['phantomjs']['prefix']   = prefix
 
     runner.converge('phantomjs::default')
   }
@@ -41,7 +42,7 @@ describe 'phantomjs::default' do
   end
 
   it 'extracts the binary' do
-    expect(runner).to execute_command("tar -xvjf #{src_dir}/#{basename}.tar.bz2 -C /usr/local/")
+    expect(runner).to execute_command("tar -xvjf #{src_dir}/#{basename}.tar.bz2 -C #{prefix}")
   end
 
   it 'notifies the link' do
@@ -51,7 +52,7 @@ describe 'phantomjs::default' do
 
   it 'creates the symlink' do
     link = runner.link('phantomjs-link')
-    expect(link.target_file).to eq('/usr/local/bin/phantomjs')
-    expect(link.to).to eq("/usr/local/#{basename}/bin/phantomjs")
+    expect(link.target_file).to eq(::File.join(prefix, 'bin', 'phantomjs'))
+    expect(link.to).to eq(::File.join(prefix, basename, 'bin', 'phantomjs'))
   end
 end

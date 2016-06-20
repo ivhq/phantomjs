@@ -29,9 +29,14 @@ node['phantomjs']['packages'].each { |name| package name }
 
 version  = node['phantomjs']['version']
 base_url = node['phantomjs']['base_url']
+prefix   = node['phantomjs']['prefix']
 src_dir  = node['phantomjs']['src_dir']
-basename = node['phantomjs']['basename']
 checksum = node['phantomjs']['checksum']
+
+basename             = "phantomjs-#{version}"
+binary_path          = ::File.join(prefix,'bin','phantomjs')
+basename_binary_path = ::File.join(prefix, basename,'bin','phantomjs')
+check_command        = "#{binary_path} --version"
 
 remote_file "#{src_dir}/#{basename}.tar.bz2" do
   owner     'root'
@@ -40,19 +45,19 @@ remote_file "#{src_dir}/#{basename}.tar.bz2" do
   backup    false
   source    "#{base_url}/#{basename}.tar.bz2"
   checksum  checksum if checksum
-  not_if    { ::File.exists?('/usr/local/bin/phantomjs') && `/usr/local/bin/phantomjs --version`.chomp == version }
+  not_if    { ::File.exists?(binary_path) && Mixlib::ShellOut.new(check_command).run_command.stdout.chomp == version }
   notifies  :run, 'execute[phantomjs-install]', :immediately
 end
 
 execute 'phantomjs-install' do
-  command   "tar -xvjf #{src_dir}/#{basename}.tar.bz2 -C /usr/local/"
+  command   "tar -xvjf #{src_dir}/#{basename}.tar.bz2 -C #{prefix}"
   action    :nothing
   notifies  :create, 'link[phantomjs-link]', :immediately
 end
 
 link 'phantomjs-link' do
-  target_file   '/usr/local/bin/phantomjs'
-  to            "/usr/local/#{basename}/bin/phantomjs"
+  target_file   binary_path
+  to            basename_binary_path
   owner         'root'
   group         'root'
   action        :nothing

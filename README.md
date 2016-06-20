@@ -87,10 +87,10 @@ All attributes are namespaced under `node['phantomjs']`.
       <td><tt>https://phantomjs.googlecode.com/files</tt></td>
     </tr>
     <tr>
-      <td>basename</td>
-      <td>Name of the package</td>
-      <td><tt>phantomjs-1.0.0-x86</tt></td>
-      <td>(varies)</td>
+      <td>prefix</td>
+      <td>Path prefix for the binary executable</td>
+      <td><tt>/usr</tt></td>
+      <td>/usr/local</td>
     </tr>
   </tbody>
 </table>
