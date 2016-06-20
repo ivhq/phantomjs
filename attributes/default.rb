@@ -39,7 +39,7 @@ default['phantomjs']['install_method'] = 'source'
 default['phantomjs']['package_name'] = 'phantomjs'
 
 # The default prefix for the binary executable
-defaul['phantomjs']['prefix'] = '/usr/local'
+default['phantomjs']['prefix'] = '/usr/local'
 
 # The src directory
 default['phantomjs']['src_dir'] = '/usr/local/src'
