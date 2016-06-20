@@ -33,7 +33,7 @@ prefix   = node['phantomjs']['prefix']
 src_dir  = node['phantomjs']['src_dir']
 checksum = node['phantomjs']['checksum']
 
-basename             = "phantomjs-#{version}"
+basename             = "phantomjs-#{version}-linux-#{node['kernel']['machine']}"
 binary_path          = ::File.join(prefix,'bin','phantomjs')
 basename_binary_path = ::File.join(prefix, basename,'bin','phantomjs')
 check_command        = "#{binary_path} --version"
